@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- White background with rounded corners -->
+  <rect width="512" height="512" rx="112" fill="#ffffff"/>
+  
+  <!-- Subtle border -->
+  <rect x="1" y="1" width="510" height="510" rx="111" fill="none" stroke="#e5e7eb" stroke-width="2"/>
+  
+  <!-- Folder shape -->
+  <g transform="translate(256, 268)">
+    <!-- Folder tab -->
+    <path d="M-100,-80 L-100,-96 Q-100,-104 -92,-104 L-36,-104 Q-28,-104 -24,-96 L-16,-80 Z" fill="#94a3b8"/>
+    
+    <!-- Folder body -->
+    <rect x="-100" y="-80" width="200" height="148" rx="10" fill="#94a3b8"/>
+    
+    <!-- Inner white area -->
+    <rect x="-88" y="-68" width="176" height="124" rx="6" fill="#f8fafc"/>
+    
+    <!-- Kanban bars -->
+    <rect x="-66" y="-16" width="28" height="60" rx="6" fill="#3b82f6"/>
+    <rect x="-14" y="-40" width="28" height="84" rx="6" fill="#10b981"/>
+    <rect x="38" y="-28" width="28" height="72" rx="6" fill="#f59e0b"/>
+  </g>
+</svg>
