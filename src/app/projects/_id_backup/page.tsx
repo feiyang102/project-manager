@@ -1,6 +1,16 @@
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 
+// 强制静态生成
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
+// 静态导出需要生成静态参数
+export async function generateStaticParams() {
+  // 暂时返回空数组，实际使用时需要根据数据源生成
+  return [];
+}
+
 export default async function ProjectDetailPage({
   params,
 }: {

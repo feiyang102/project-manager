@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/niconiahi/tauri-v2-json-schema/main/tauri.conf.json",
+  "productName": "项目与文件管理",
+  "version": "0.1.0",
+  "identifier": "com.adminpanel.app",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:3000",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../out"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "项目与文件管理",
+        "width": 1200,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all"
+  }
+}
