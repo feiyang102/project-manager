@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useSyncExternalStore } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import {
   listProjects,
   listFileItems,
@@ -15,6 +15,13 @@ import {
   type RecentItem,
 } from "./store";
 import type { Project, FileItem, Tag, Note, Link } from "./types";
+
+// ============ Mounted guard (avoid hydration mismatch) ============
+function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  return mounted;
+}
 
 // ============ Core hook: subscribe to data changes ============
 let snapshot = 0;
@@ -34,50 +41,58 @@ function useDataVersion() {
 
 // ============ Projects ============
 export function useProjects(): Project[] {
+  const mounted = useMounted();
   useDataVersion();
-  return listProjects();
+  return mounted ? listProjects() : [];
 }
 
 // ============ FileItems ============
 export function useFileItems(): FileItem[] {
+  const mounted = useMounted();
   useDataVersion();
-  return listFileItems();
+  return mounted ? listFileItems() : [];
 }
 
 // ============ Tags ============
 export function useTags(): Tag[] {
+  const mounted = useMounted();
   useDataVersion();
-  return listTags();
+  return mounted ? listTags() : [];
 }
 
 // ============ Notes ============
 export function useNotes(projectId?: string): Note[] {
+  const mounted = useMounted();
   useDataVersion();
-  return listNotes(projectId);
+  return mounted ? listNotes(projectId) : [];
 }
 
 // ============ Links ============
 export function useLinks(projectId?: string): Link[] {
+  const mounted = useMounted();
   useDataVersion();
-  return listLinks(projectId);
+  return mounted ? listLinks(projectId) : [];
 }
 
 // ============ Recent ============
 export function useRecent(): RecentItem[] {
+  const mounted = useMounted();
   useDataVersion();
-  return listRecent();
+  return mounted ? listRecent() : [];
 }
 
 // ============ Tag usage ============
 export function useTagUsageCount(tagId: string): number {
+  const mounted = useMounted();
   useDataVersion();
-  return getTagUsageCount(tagId);
+  return mounted ? getTagUsageCount(tagId) : 0;
 }
 
 // ============ Search ============
 export function useSearch(query: string): SearchResult[] {
+  const mounted = useMounted();
   useDataVersion();
-  return searchAll(query);
+  return mounted ? searchAll(query) : [];
 }
 
 // ============ Toast ============
