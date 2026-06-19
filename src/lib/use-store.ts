@@ -95,16 +95,24 @@ export function useSearch(query: string): SearchResult[] {
   return mounted ? searchAll(query) : [];
 }
 
-// ============ Toast ============
+// ============ Toast (sonner) ============
+import { toast as sonnerToast } from "sonner";
+
 export type ToastMsg = { message: string; type: "success" | "error" | "info" };
 
 export function useToast() {
-  const [toast, setToast] = useState<ToastMsg | null>(null);
-
   const show = useCallback((message: string, type: ToastMsg["type"] = "success") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
+    switch (type) {
+      case "error":
+        sonnerToast.error(message);
+        break;
+      case "info":
+        sonnerToast(message);
+        break;
+      default:
+        sonnerToast.success(message);
+    }
   }, []);
 
-  return { toast, show };
+  return { toast: null as ToastMsg | null, show };
 }

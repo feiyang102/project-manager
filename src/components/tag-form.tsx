@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import type { Tag } from "@/lib/types";
 
 const PRESET_COLORS = [
@@ -41,45 +44,44 @@ export function TagForm({ open, onClose, onSubmit, initial }: TagFormProps) {
   return (
     <Modal open={open} onClose={onClose} title={initial ? "编辑标签" : "新建标签"} width="max-w-sm">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-muted">名称</label>
-          <input
+        <div className="space-y-2">
+          <Label>名称</Label>
+          <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
             placeholder="输入标签名称"
             required
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-muted">颜色</label>
-          <div className="mt-2 flex flex-wrap gap-2">
+        <div className="space-y-2">
+          <Label>颜色</Label>
+          <div className="flex flex-wrap gap-2">
             {PRESET_COLORS.map((c) => (
               <button
                 key={c}
                 type="button"
                 onClick={() => setColor(c)}
-                className={`h-7 w-7 rounded-full transition-transform ${color === c ? "scale-125 ring-2 ring-offset-2 ring-blue-400" : "hover:scale-110"}`}
+                className={`h-7 w-7 rounded-full transition-transform ${color === c ? "scale-125 ring-2 ring-offset-2 ring-primary" : "hover:scale-110"}`}
                 style={{ backgroundColor: c }}
               />
             ))}
           </div>
-          <div className="mt-2 flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <input
               type="color"
               value={color}
               onChange={(e) => setColor(e.target.value)}
               className="h-7 w-7 cursor-pointer rounded border-0"
             />
-            <span className="font-mono text-xs text-muted">{color}</span>
+            <span className="font-mono text-xs text-muted-foreground">{color}</span>
           </div>
         </div>
 
         {/* Preview */}
         {name && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted">预览：</span>
+            <span className="text-xs text-muted-foreground">预览：</span>
             <span
               className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
               style={{ backgroundColor: color + "22", color }}
@@ -91,19 +93,8 @@ export function TagForm({ open, onClose, onSubmit, initial }: TagFormProps) {
         )}
 
         <div className="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg border border-card-border px-4 py-2 text-sm transition-colors hover:bg-background"
-          >
-            取消
-          </button>
-          <button
-            type="submit"
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-fg transition-colors hover:bg-accent/90"
-          >
-            {initial ? "保存" : "创建"}
-          </button>
+          <Button type="button" variant="outline" onClick={onClose}>取消</Button>
+          <Button type="submit">{initial ? "保存" : "创建"}</Button>
         </div>
       </form>
     </Modal>

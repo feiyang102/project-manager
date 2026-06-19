@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTags } from "@/lib/use-store";
 import type { Project, ProjectStatus, ProjectType, Priority } from "@/lib/types";
 import { STATUS_LABELS, TYPE_LABELS, PRIORITY_LABELS } from "@/lib/types";
@@ -79,112 +84,104 @@ export function ProjectForm({ open, onClose, onSubmit, initial }: ProjectFormPro
   return (
     <Modal open={open} onClose={onClose} title={initial ? "编辑项目" : "新建项目"} width="max-w-xl">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-muted">名称 *</label>
-          <input
+        <div className="space-y-2">
+          <Label>名称 *</Label>
+          <Input
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
             placeholder="输入项目名称"
             required
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-muted">描述</label>
-          <textarea
+        <div className="space-y-2">
+          <Label>描述</Label>
+          <Textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
             rows={2}
             placeholder="简要描述项目"
           />
         </div>
 
         <div className="grid grid-cols-3 gap-3">
-          <div>
-            <label className="block text-sm font-medium text-muted">状态</label>
-            <select
-              value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value as ProjectStatus })}
-              className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent"
-            >
-              {Object.entries(STATUS_LABELS).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
-              ))}
-            </select>
+          <div className="space-y-2">
+            <Label>状态</Label>
+            <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v as ProjectStatus })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-muted">类型</label>
-            <select
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value as ProjectType })}
-              className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent"
-            >
-              {Object.entries(TYPE_LABELS).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
-              ))}
-            </select>
+          <div className="space-y-2">
+            <Label>类型</Label>
+            <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v as ProjectType })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {Object.entries(TYPE_LABELS).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-muted">优先级</label>
-            <select
-              value={form.priority}
-              onChange={(e) => setForm({ ...form, priority: e.target.value as Priority })}
-              className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent"
-            >
-              {Object.entries(PRIORITY_LABELS).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
-              ))}
-            </select>
+          <div className="space-y-2">
+            <Label>优先级</Label>
+            <Select value={form.priority} onValueChange={(v) => setForm({ ...form, priority: v as Priority })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {Object.entries(PRIORITY_LABELS).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-muted">本地路径</label>
-          <input
+        <div className="space-y-2">
+          <Label>本地路径</Label>
+          <Input
             value={form.localPath}
             onChange={(e) => setForm({ ...form, localPath: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 font-mono text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+            className="font-mono"
             placeholder="/Users/you/projects/my-app"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-muted">技术栈（逗号分隔）</label>
-          <input
+        <div className="space-y-2">
+          <Label>技术栈（逗号分隔）</Label>
+          <Input
             value={form.techStack}
             onChange={(e) => setForm({ ...form, techStack: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
             placeholder="React, TypeScript, Tailwind"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-sm font-medium text-muted">开始日期</label>
-            <input
+          <div className="space-y-2">
+            <Label>开始日期</Label>
+            <Input
               type="date"
               value={form.startedAt}
               onChange={(e) => setForm({ ...form, startedAt: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-muted">目标日期</label>
-            <input
+          <div className="space-y-2">
+            <Label>目标日期</Label>
+            <Input
               type="date"
               value={form.targetAt}
               onChange={(e) => setForm({ ...form, targetAt: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent"
             />
           </div>
         </div>
 
         {tags.length > 0 && (
-          <div>
-            <label className="block text-sm font-medium text-muted">标签</label>
-            <div className="mt-1 flex flex-wrap gap-2">
+          <div className="space-y-2">
+            <Label>标签</Label>
+            <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <button
                   key={tag.id}
@@ -193,7 +190,7 @@ export function ProjectForm({ open, onClose, onSubmit, initial }: ProjectFormPro
                   className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                     form.tagIds.includes(tag.id)
                       ? "text-white"
-                      : "border border-card-border text-muted hover:bg-background"
+                      : "border border-border text-muted-foreground hover:bg-accent"
                   }`}
                   style={
                     form.tagIds.includes(tag.id)
@@ -209,19 +206,8 @@ export function ProjectForm({ open, onClose, onSubmit, initial }: ProjectFormPro
         )}
 
         <div className="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg border border-card-border px-4 py-2 text-sm transition-colors hover:bg-background"
-          >
-            取消
-          </button>
-          <button
-            type="submit"
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-fg transition-colors hover:bg-accent/90"
-          >
-            {initial ? "保存" : "创建"}
-          </button>
+          <Button type="button" variant="outline" onClick={onClose}>取消</Button>
+          <Button type="submit">{initial ? "保存" : "创建"}</Button>
         </div>
       </form>
     </Modal>

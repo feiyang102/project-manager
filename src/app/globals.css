@@ -1,16 +1,41 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #f8f9fb;
-  --foreground: #111827;
+  /* shadcn base */
+  --radius: 0.625rem;
+  --background: oklch(0.985 0.002 247.858);
+  --foreground: oklch(0.145 0.014 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0.014 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0.014 285.823);
+  --primary: oklch(0.623 0.214 259.815);
+  --primary-foreground: oklch(0.97 0.014 254.604);
+  --secondary: oklch(0.968 0.007 247.896);
+  --secondary-foreground: oklch(0.205 0.014 285.823);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.556 0.02 286.067);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.205 0.014 285.823);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.97 0.014 254.604);
+  --border: oklch(0.922 0.004 247.896);
+  --input: oklch(0.922 0.004 247.896);
+  --ring: oklch(0.623 0.214 259.815);
+
+  /* sidebar legacy */
   --sidebar-bg: #1e293b;
   --sidebar-fg: #cbd5e1;
   --sidebar-active: #3b82f6;
+
+  /* app legacy */
   --card-bg: #ffffff;
   --card-border: #e5e7eb;
-  --muted: #6b7280;
-  --accent: #3b82f6;
-  --accent-fg: #ffffff;
+  --accent-legacy: #3b82f6;
+  --accent-fg-legacy: #ffffff;
   --danger: #ef4444;
   --success: #22c55e;
   --warning: #f59e0b;
@@ -19,17 +44,37 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-sidebar-bg: var(--sidebar-bg);
   --color-sidebar-fg: var(--sidebar-fg);
   --color-sidebar-active: var(--sidebar-active);
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-accent-fg: var(--accent-fg);
+  --color-accent-legacy: var(--accent-legacy);
+  --color-accent-fg-legacy: var(--accent-fg-legacy);
   --color-danger: var(--danger);
   --color-success: var(--success);
   --color-warning: var(--warning);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }

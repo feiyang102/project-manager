@@ -1,6 +1,15 @@
 "use client";
 
-import { Modal } from "./modal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -22,24 +31,22 @@ export function ConfirmDialog({
   danger = false,
 }: ConfirmDialogProps) {
   return (
-    <Modal open={open} onClose={onClose} title={title} width="max-w-sm">
-      <p className="text-sm text-muted">{message}</p>
-      <div className="mt-5 flex justify-end gap-2">
-        <button
-          onClick={onClose}
-          className="rounded-lg border border-card-border px-4 py-2 text-sm transition-colors hover:bg-background"
-        >
-          取消
-        </button>
-        <button
-          onClick={() => { onConfirm(); onClose(); }}
-          className={`rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors ${
-            danger ? "bg-danger hover:bg-danger/90" : "bg-accent hover:bg-accent/90"
-          }`}
-        >
-          {confirmText}
-        </button>
-      </div>
-    </Modal>
+    <AlertDialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{message}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>取消</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => { onConfirm(); onClose(); }}
+            className={danger ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""}
+          >
+            {confirmText}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

@@ -5,12 +5,13 @@ import { Clock, FolderKanban, FolderOpen, Trash2 } from "lucide-react";
 import { useRecent, useToast } from "@/lib/use-store";
 import { clearRecent } from "@/lib/store";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Toast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function RecentPage() {
   const router = useRouter();
   const recent = useRecent();
-  const { toast, show } = useToast();
+  const { show } = useToast();
 
   const recentProjects = recent.filter((r) => r.type === "project");
   const recentFiles = recent.filter((r) => r.type === "file");
@@ -34,7 +35,7 @@ export default function RecentPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">最近访问</h1>
-        <p className="mt-1 text-sm text-muted">最近查看过的项目和文件收藏</p>
+        <p className="mt-1 text-sm text-muted-foreground">最近查看过的项目和文件收藏</p>
       </div>
 
       {recent.length === 0 ? (
@@ -47,61 +48,58 @@ export default function RecentPage() {
         <>
           {/* Recent Projects */}
           {recentProjects.length > 0 && (
-            <div className="rounded-xl border border-card-border bg-card-bg p-5">
-              <h2 className="text-sm font-semibold">最近项目</h2>
-              <div className="mt-3 space-y-1">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">最近项目</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1">
                 {recentProjects.slice(0, 10).map((item) => (
-                  <button
+                  <Button
                     key={item.id}
+                    variant="ghost"
+                    className="w-full justify-between"
                     onClick={() => router.push(`/projects?id=${item.targetId}`)}
-                    className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-background"
                   >
                     <span className="flex items-center gap-2">
-                      <FolderKanban className="h-4 w-4 text-accent" />
+                      <FolderKanban className="h-4 w-4 text-primary" />
                       {item.name}
                     </span>
-                    <span className="text-xs text-muted">{formatTime(item.accessedAt)}</span>
-                  </button>
+                    <span className="text-xs text-muted-foreground">{formatTime(item.accessedAt)}</span>
+                  </Button>
                 ))}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           )}
 
           {/* Recent Files */}
           {recentFiles.length > 0 && (
-            <div className="rounded-xl border border-card-border bg-card-bg p-5">
-              <h2 className="text-sm font-semibold">最近文件收藏</h2>
-              <div className="mt-3 space-y-1">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">最近文件收藏</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1">
                 {recentFiles.slice(0, 10).map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between rounded-lg px-3 py-2 text-sm"
-                  >
+                  <div key={item.id} className="flex items-center justify-between rounded-lg px-3 py-2 text-sm">
                     <span className="flex items-center gap-2">
-                      <FolderOpen className="h-4 w-4 text-accent" />
+                      <FolderOpen className="h-4 w-4 text-primary" />
                       {item.name}
                     </span>
-                    <span className="text-xs text-muted">{formatTime(item.accessedAt)}</span>
+                    <span className="text-xs text-muted-foreground">{formatTime(item.accessedAt)}</span>
                   </div>
                 ))}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           )}
 
           {/* Clear */}
           <div className="flex justify-end">
-            <button
-              onClick={() => { clearRecent(); show("记录已清空"); }}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-card-border bg-card-bg px-3 py-2 text-sm text-muted transition-colors hover:bg-background"
-            >
+            <Button variant="outline" onClick={() => { clearRecent(); show("记录已清空"); }}>
               <Trash2 className="h-4 w-4" />
               清空记录
-            </button>
+            </Button>
           </div>
         </>
       )}
-
-      <Toast toast={toast} />
     </div>
   );
 }

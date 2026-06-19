@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Sidebar from "@/components/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body className="min-h-full bg-background">
         <Sidebar />
         <main className="ml-60 min-h-screen p-6">{children}</main>
+        <Toaster position="bottom-right" richColors closeButton />
       </body>
     </html>
   );

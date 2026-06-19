@@ -1,13 +1,17 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Plus, Search, FolderOpen, MoreVertical, Pencil, Trash2, Archive, Copy, Check, AlertTriangle, File, Folder, GitBranch, FileText, Image, Film, Music, ArchiveIcon, HelpCircle } from "lucide-react";
+import { Plus, Search, FolderOpen, Pencil, Trash2, Archive, Copy, Check, AlertTriangle, File, Folder, GitBranch, FileText, Image, Film, Music, ArchiveIcon, HelpCircle, MoreVertical } from "lucide-react";
 import { useFileItems, useTags, useToast } from "@/lib/use-store";
 import { createFileItem, updateFileItem, deleteFileItem, archiveFileItem } from "@/lib/store";
 import { TagBadge } from "@/components/ui/badges";
 import { EmptyState } from "@/components/ui/empty-state";
 import { FileForm } from "@/components/file-form";
-import { Toast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { openFolder } from "@/lib/open-folder";
 import type { FileItem, FileItemKind } from "@/lib/types";
 import { KIND_LABELS } from "@/lib/types";
@@ -27,13 +31,12 @@ const KIND_ICONS: Record<FileItemKind, typeof File> = {
 export default function FilesPage() {
   const files = useFileItems();
   const tags = useTags();
-  const { toast, show } = useToast();
+  const { show } = useToast();
 
   const [search, setSearch] = useState("");
   const [kindFilter, setKindFilter] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editingFile, setEditingFile] = useState<FileItem | null>(null);
-  const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const activeFiles = files.filter((f) => !f.archived);
@@ -49,7 +52,7 @@ export default function FilesPage() {
           f.path.toLowerCase().includes(q)
       );
     }
-    if (kindFilter) list = list.filter((f) => f.kind === kindFilter);
+    if (kindFilter && kindFilter !== "__all__") list = list.filter((f) => f.kind === kindFilter);
     return list.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }, [activeFiles, search, kindFilter]);
 
@@ -74,7 +77,6 @@ export default function FilesPage() {
     } catch {
       show("复制失败", "error");
     }
-    setMenuOpen(null);
   };
 
   return (
@@ -83,39 +85,36 @@ export default function FilesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">文件收藏</h1>
-          <p className="mt-1 text-sm text-muted">管理收藏的本地文件与文件夹（{activeFiles.length}）</p>
+          <p className="mt-1 text-sm text-muted-foreground">管理收藏的本地文件与文件夹（{activeFiles.length}）</p>
         </div>
-        <button
-          onClick={() => { setEditingFile(null); setFormOpen(true); }}
-          className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-fg transition-colors hover:bg-accent/90"
-        >
+        <Button onClick={() => { setEditingFile(null); setFormOpen(true); }}>
           <Plus className="h-4 w-4" />
           添加收藏
-        </button>
+        </Button>
       </div>
 
       {/* Toolbar */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-          <input
-            type="text"
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="搜索收藏..."
-            className="w-full rounded-lg border border-card-border bg-card-bg py-2 pl-10 pr-4 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+            className="pl-10"
           />
         </div>
-        <select
-          value={kindFilter}
-          onChange={(e) => setKindFilter(e.target.value)}
-          className="rounded-lg border border-card-border bg-card-bg px-3 py-2 text-sm text-muted outline-none focus:border-accent"
-        >
-          <option value="">全部类型</option>
-          {Object.entries(KIND_LABELS).map(([k, v]) => (
-            <option key={k} value={k}>{v}</option>
-          ))}
-        </select>
+        <Select value={kindFilter} onValueChange={setKindFilter}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="全部类型" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__all__">全部类型</SelectItem>
+            {Object.entries(KIND_LABELS).map(([k, v]) => (
+              <SelectItem key={k} value={k}>{v}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* List */}
@@ -126,12 +125,9 @@ export default function FilesPage() {
           description={search || kindFilter ? "尝试调整搜索或筛选条件" : "点击「添加收藏」收藏你的第一个本地文件或文件夹"}
           action={
             !search && !kindFilter ? (
-              <button
-                onClick={() => { setEditingFile(null); setFormOpen(true); }}
-                className="rounded-lg bg-accent px-4 py-2 text-sm text-white"
-              >
+              <Button onClick={() => { setEditingFile(null); setFormOpen(true); }}>
                 添加收藏
-              </button>
+              </Button>
             ) : undefined
           }
         />
@@ -141,90 +137,74 @@ export default function FilesPage() {
             const Icon = KIND_ICONS[file.kind];
             const fileTags = tags.filter((t) => file.tagIds.includes(t.id));
             return (
-              <div
-                key={file.id}
-                className="group flex items-center justify-between rounded-xl border border-card-border bg-card-bg p-4 transition-colors hover:border-accent/30"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <Icon className="h-4 w-4 shrink-0 text-accent" />
-                    <span className="text-sm font-medium">{file.name}</span>
-                    <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-500">
-                      {KIND_LABELS[file.kind]}
-                    </span>
-                    {!file.exists && (
-                      <span className="flex items-center gap-1 rounded bg-red-50 px-1.5 py-0.5 text-xs text-danger">
-                        <AlertTriangle className="h-3 w-3" /> 路径失效
+              <Card key={file.id} className="transition-colors hover:border-primary/30">
+                <CardContent className="flex items-center justify-between p-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <Icon className="h-4 w-4 shrink-0 text-primary" />
+                      <span className="text-sm font-medium">{file.name}</span>
+                      <span className="rounded bg-secondary px-1.5 py-0.5 text-xs text-secondary-foreground">
+                        {KIND_LABELS[file.kind]}
                       </span>
-                    )}
-                  </div>
-                  <div className="mt-1.5 flex items-center gap-3">
-                    <span className="truncate font-mono text-xs text-muted/70">{file.path}</span>
-                    {fileTags.length > 0 && (
-                      <div className="flex gap-1">
-                        {fileTags.slice(0, 3).map((tag) => (
-                          <TagBadge key={tag.id} name={tag.name} color={tag.color} />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="relative ml-3 flex shrink-0 items-center gap-1">
-                  <button
-                    onClick={() => openFolder(file.path)}
-                    className="rounded p-1.5 text-muted opacity-0 transition-opacity hover:bg-background hover:text-accent group-hover:opacity-100"
-                    title="打开"
-                  >
-                    <FolderOpen className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleCopyPath(file)}
-                    className="rounded p-1.5 text-muted opacity-0 transition-opacity hover:bg-background group-hover:opacity-100"
-                    title="复制路径"
-                  >
-                    {copiedId === file.id ? (
-                      <Check className="h-4 w-4 text-success" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => setMenuOpen(menuOpen === file.id ? null : file.id)}
-                    className="rounded p-1.5 text-muted opacity-0 transition-opacity hover:bg-background group-hover:opacity-100"
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </button>
-                  {menuOpen === file.id && (
-                    <div className="absolute right-0 top-8 z-10 w-36 rounded-lg border border-card-border bg-white py-1 shadow-lg">
-                      <button
-                        onClick={() => { setEditingFile(file); setFormOpen(true); setMenuOpen(null); }}
-                        className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-background"
-                      >
-                        <Pencil className="h-3.5 w-3.5" /> 编辑
-                      </button>
-                      <button
-                        onClick={() => { archiveFileItem(file.id); show("已归档"); setMenuOpen(null); }}
-                        className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-background"
-                      >
-                        <Archive className="h-3.5 w-3.5" /> 归档
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (confirm(`确定删除收藏「${file.name}」？`)) {
-                            deleteFileItem(file.id);
-                            show("已删除");
-                          }
-                          setMenuOpen(null);
-                        }}
-                        className="flex w-full items-center gap-2 px-3 py-1.5 text-sm text-danger hover:bg-red-50"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" /> 删除
-                      </button>
+                      {!file.exists && (
+                        <span className="flex items-center gap-1 rounded bg-red-50 px-1.5 py-0.5 text-xs text-destructive">
+                          <AlertTriangle className="h-3 w-3" /> 路径失效
+                        </span>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+                    <div className="mt-1.5 flex items-center gap-3">
+                      <span className="truncate font-mono text-xs text-muted-foreground/70">{file.path}</span>
+                      {fileTags.length > 0 && (
+                        <div className="flex gap-1">
+                          {fileTags.slice(0, 3).map((tag) => (
+                            <TagBadge key={tag.id} name={tag.name} color={tag.color} />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="ml-3 flex shrink-0 items-center gap-1">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openFolder(file.path)} title="打开">
+                      <FolderOpen className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleCopyPath(file)} title="复制路径">
+                      {copiedId === file.id ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => { setEditingFile(file); setFormOpen(true); }}>
+                          <Pencil className="h-3.5 w-3.5" /> 编辑
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { archiveFileItem(file.id); show("已归档"); }}>
+                          <Archive className="h-3.5 w-3.5" /> 归档
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => {
+                            if (confirm(`确定删除收藏「${file.name}」？`)) {
+                              deleteFileItem(file.id);
+                              show("已删除");
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> 删除
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>
@@ -236,8 +216,6 @@ export default function FilesPage() {
         onSubmit={editingFile ? handleUpdate : handleCreate}
         initial={editingFile}
       />
-
-      <Toast toast={toast} />
     </div>
   );
 }

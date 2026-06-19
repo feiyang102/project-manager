@@ -1,21 +1,18 @@
 "use client";
 
-import type { ToastMsg } from "@/lib/use-store";
+import { toast } from "sonner";
 
-export function Toast({ toast }: { toast: ToastMsg | null }) {
-  if (!toast) return null;
+export type ToastType = "success" | "error" | "info";
 
-  const colors = {
-    success: "bg-success text-white",
-    error: "bg-danger text-white",
-    info: "bg-accent text-white",
-  };
-
-  return (
-    <div className="fixed bottom-6 right-6 z-[100] animate-in fade-in slide-in-from-bottom-2">
-      <div className={`rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg ${colors[toast.type]}`}>
-        {toast.message}
-      </div>
-    </div>
-  );
+export function showToast(message: string, type: ToastType = "success") {
+  switch (type) {
+    case "success":
+      toast.success(message);
+      break;
+    case "error":
+      toast.error(message);
+      break;
+    default:
+      toast(message);
+  }
 }

@@ -4,14 +4,18 @@ import { useRef } from "react";
 import { Download, Upload, Database, Info } from "lucide-react";
 import { useProjects, useFileItems, useTags, useToast } from "@/lib/use-store";
 import { exportData, importData } from "@/lib/store";
-import { Toast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import type { AppData } from "@/lib/store";
 
 export default function SettingsPage() {
   const projects = useProjects();
   const files = useFileItems();
   const tags = useTags();
-  const { toast, show } = useToast();
+  const { show } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
@@ -51,7 +55,6 @@ export default function SettingsPage() {
       }
     };
     reader.readAsText(file);
-    // Reset input so same file can be selected again
     e.target.value = "";
   };
 
@@ -60,54 +63,50 @@ export default function SettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">设置</h1>
-        <p className="mt-1 text-sm text-muted">管理应用配置</p>
+        <p className="mt-1 text-sm text-muted-foreground">管理应用配置</p>
       </div>
 
       {/* Data Storage */}
-      <div className="rounded-xl border border-card-border bg-card-bg p-5">
-        <div className="flex items-center gap-2">
-          <Database className="h-4 w-4 text-muted" />
-          <h2 className="text-sm font-semibold">数据存储</h2>
-        </div>
-        <div className="mt-4 space-y-3 text-sm">
+      <Card>
+        <CardHeader className="flex-row items-center gap-2 pb-3">
+          <Database className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm">数据存储</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
           <div className="flex items-center justify-between">
-            <span className="text-muted">存储方式</span>
+            <span className="text-muted-foreground">存储方式</span>
             <span className="text-xs">localStorage（浏览器本地存储）</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted">项目数量</span>
+            <span className="text-muted-foreground">项目数量</span>
             <span>{projects.length}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted">文件收藏数量</span>
+            <span className="text-muted-foreground">文件收藏数量</span>
             <span>{files.length}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted">标签数量</span>
+            <span className="text-muted-foreground">标签数量</span>
             <span>{tags.length}</span>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Import/Export */}
-      <div className="rounded-xl border border-card-border bg-card-bg p-5">
-        <h2 className="text-sm font-semibold">导入导出</h2>
-        <p className="mt-1 text-xs text-muted">导出所有数据为 JSON 文件备份，或从备份文件恢复</p>
-        <div className="mt-4 flex gap-3">
-          <button
-            onClick={handleExport}
-            className="inline-flex items-center gap-2 rounded-lg border border-card-border px-4 py-2 text-sm transition-colors hover:bg-background"
-          >
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm">导入导出</CardTitle>
+          <p className="text-xs text-muted-foreground">导出所有数据为 JSON 文件备份，或从备份文件恢复</p>
+        </CardHeader>
+        <CardContent className="flex gap-3">
+          <Button variant="outline" onClick={handleExport}>
             <Download className="h-4 w-4" />
             导出数据 (JSON)
-          </button>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-2 rounded-lg border border-card-border px-4 py-2 text-sm transition-colors hover:bg-background"
-          >
+          </Button>
+          <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
             <Upload className="h-4 w-4" />
             导入数据 (JSON)
-          </button>
+          </Button>
           <input
             ref={fileInputRef}
             type="file"
@@ -115,59 +114,73 @@ export default function SettingsPage() {
             onChange={handleImport}
             className="hidden"
           />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Default Settings */}
-      <div className="rounded-xl border border-card-border bg-card-bg p-5">
-        <h2 className="text-sm font-semibold">默认设置</h2>
-        <div className="mt-4 space-y-4 text-sm">
-          <div>
-            <label className="block text-muted">默认项目类型</label>
-            <select className="mt-1 w-48 rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent">
-              <option value="code">代码</option>
-              <option value="design">设计</option>
-              <option value="writing">写作</option>
-              <option value="learning">学习</option>
-              <option value="resource">资料</option>
-              <option value="life">生活</option>
-              <option value="other">其他</option>
-            </select>
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm">默认设置</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+          <div className="space-y-2">
+            <Label>默认项目类型</Label>
+            <Select defaultValue="code">
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="code">代码</SelectItem>
+                <SelectItem value="design">设计</SelectItem>
+                <SelectItem value="writing">写作</SelectItem>
+                <SelectItem value="learning">学习</SelectItem>
+                <SelectItem value="resource">资料</SelectItem>
+                <SelectItem value="life">生活</SelectItem>
+                <SelectItem value="other">其他</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div>
-            <label className="block text-muted">默认项目状态</label>
-            <select className="mt-1 w-48 rounded-lg border border-card-border bg-white px-3 py-2 text-sm outline-none focus:border-accent">
-              <option value="idea">想法</option>
-              <option value="active">进行中</option>
-              <option value="paused">暂停</option>
-            </select>
+          <div className="space-y-2">
+            <Label>默认项目状态</Label>
+            <Select defaultValue="idea">
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="idea">想法</SelectItem>
+                <SelectItem value="active">进行中</SelectItem>
+                <SelectItem value="paused">暂停</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* App Info */}
-      <div className="rounded-xl border border-card-border bg-card-bg p-5">
-        <div className="flex items-center gap-2">
-          <Info className="h-4 w-4 text-muted" />
-          <h2 className="text-sm font-semibold">应用信息</h2>
-        </div>
-        <div className="mt-4 space-y-2 text-sm">
+      <Card>
+        <CardHeader className="flex-row items-center gap-2 pb-3">
+          <Info className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm">应用信息</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
           <div className="flex items-center justify-between">
-            <span className="text-muted">版本</span>
+            <span className="text-muted-foreground">版本</span>
             <span>1.0.0</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted">框架</span>
+            <span className="text-muted-foreground">框架</span>
             <span>Next.js + Tauri</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted">存储</span>
+            <span className="text-muted-foreground">UI</span>
+            <span>shadcn/ui + Tailwind CSS</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">存储</span>
             <span>localStorage</span>
           </div>
-        </div>
-      </div>
-
-      <Toast toast={toast} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
