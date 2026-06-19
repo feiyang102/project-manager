@@ -10,7 +10,8 @@
     {
       "identifier": "shell:allow-execute",
       "allow": [
-        { "name": "shell", "cmd": "/bin/zsh", "args": true }
+        { "name": "shell", "cmd": "/bin/zsh", "args": true },
+        { "name": "shell-win", "cmd": "powershell", "args": true }
       ]
     },
     "opener:default",

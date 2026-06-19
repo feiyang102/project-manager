@@ -15,12 +15,20 @@ export async function openFolder(path: string) {
 
 /**
  * 使用 qoder 命令打开指定路径
- * 通过 /bin/zsh -ic 执行，支持用户 shell 环境中的 alias 和 PATH
+ * 根据操作系统自动选择合适的 shell
  * @param path - 要打开的目录绝对路径
  */
 export async function openInQoder(path: string) {
   try {
-    const result = await Command.create("shell", ["-ic", `qoder "${path}"`]).execute();
+    const isWindows = navigator.platform.toLowerCase().includes('win');
+    let result;
+    if (isWindows) {
+      // Windows: 使用 powershell 执行 qoder 命令
+      result = await Command.create("shell-win", ["-Command", `qoder "${path}"`]).execute();
+    } else {
+      // macOS/Linux: 使用 zsh 执行 qoder 命令
+      result = await Command.create("shell", ["-ic", `qoder "${path}"`]).execute();
+    }
     if (result.code !== 0) {
       console.error(`Qoder 打开失败 [path=${path}]: exit ${result.code}, stderr: ${result.stderr}`);
     }
