@@ -3,7 +3,7 @@
 import { useState, useMemo, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { Plus, Search, Filter, FolderKanban, MoreVertical, FolderOpen, Archive, Pencil, Trash2, SortAsc } from "lucide-react";
+import { Plus, Search, Filter, FolderKanban, MoreVertical, FolderOpen, Archive, Pencil, Trash2, SortAsc, Terminal } from "lucide-react";
 import { useProjects, useTags, useToast } from "@/lib/use-store";
 import { createProject, updateProject, deleteProject, archiveProject, getProject } from "@/lib/store";
 import { StatusBadge, TypeBadge, PriorityBadge, TagBadge } from "@/components/ui/badges";
@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { ProjectForm } from "@/components/project-form";
 import { ProjectDetail } from "@/components/project-detail";
 import { Toast } from "@/components/ui/toast";
-import { openFolder } from "@/lib/open-folder";
+import { openFolder, openInQoder } from "@/lib/open-folder";
 import type { Project, ProjectStatus, ProjectType, Priority } from "@/lib/types";
 import { STATUS_LABELS, TYPE_LABELS, PRIORITY_LABELS } from "@/lib/types";
 
@@ -236,17 +236,26 @@ export default function ProjectsPage() {
 
                 <div className="relative ml-3 flex shrink-0 items-center gap-1">
                   {project.localPath && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); openFolder(project.localPath!); }}
-                      className="rounded p-1.5 text-muted opacity-0 transition-opacity hover:bg-background hover:text-accent group-hover:opacity-100"
-                      title="打开文件夹"
-                    >
-                      <FolderOpen className="h-4 w-4" />
-                    </button>
+                    <>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openFolder(project.localPath!); }}
+                        className="rounded p-1.5 text-muted transition-opacity hover:bg-background hover:text-accent"
+                        title="打开文件夹"
+                      >
+                        <FolderOpen className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openInQoder(project.localPath!); }}
+                        className="rounded p-1.5 text-muted transition-opacity hover:bg-background hover:text-accent"
+                        title="用 Qoder 打开"
+                      >
+                        <Terminal className="h-4 w-4" />
+                      </button>
+                    </>
                   )}
                   <button
                     onClick={(e) => { e.stopPropagation(); setMenuOpen(menuOpen === project.id ? null : project.id); }}
-                    className="rounded p-1.5 text-muted opacity-0 transition-opacity hover:bg-background group-hover:opacity-100"
+                    className="rounded p-1.5 text-muted transition-opacity hover:bg-background"
                   >
                     <MoreVertical className="h-4 w-4" />
                   </button>
