@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, FolderOpen, Edit2, Trash2, Plus, ExternalLink, Archive, FileText, Link2, StickyNote, Copy, Check } from "lucide-react";
+import { X, FolderOpen, Edit2, Trash2, Plus, ExternalLink, Archive, FileText, Link2, StickyNote, Copy, Check, Terminal } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { useTags, useFileItems, useNotes, useLinks } from "@/lib/use-store";
 import {
@@ -18,7 +18,7 @@ import {
   deleteLink,
 } from "@/lib/store";
 import { StatusBadge, TypeBadge, PriorityBadge, TagBadge } from "@/components/ui/badges";
-import { openFolder } from "@/lib/open-folder";
+import { openFolder, openInQoder } from "@/lib/open-folder";
 
 interface ProjectDetailProps {
   project: Project;
@@ -157,8 +157,15 @@ export function ProjectDetail({ project, onClose, onEdit, onToast }: ProjectDeta
                   <FolderOpen className="h-3.5 w-3.5 text-accent" />
                   <span className="font-mono text-xs">{project.localPath}</span>
                 </button>
-                <button onClick={handleCopyPath} className="rounded p-1 text-muted hover:bg-background">
+                <button onClick={handleCopyPath} className="rounded p-1 text-muted hover:bg-background" title="复制路径">
                   {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+                </button>
+                <button
+                  onClick={() => openInQoder(project.localPath!)}
+                  className="rounded p-1 text-muted hover:bg-background hover:text-accent"
+                  title="用 Qoder 打开"
+                >
+                  <Terminal className="h-3.5 w-3.5" />
                 </button>
               </div>
             )}
