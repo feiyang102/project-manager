@@ -1,4 +1,4 @@
-import { open } from "@tauri-apps/plugin-shell";
+import { openPath } from "@tauri-apps/plugin-opener";
 
 /**
  * 在系统文件管理器中打开指定文件夹路径
@@ -6,7 +6,7 @@ import { open } from "@tauri-apps/plugin-shell";
  */
 export async function openFolder(path: string) {
   try {
-    await open(path);
+    await openPath(path);
   } catch (e) {
     console.error("打开文件夹失败:", e);
   }
