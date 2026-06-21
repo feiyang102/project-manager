@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
   FolderKanban,
   Star,
   Tags,
@@ -16,7 +15,6 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "仪表盘", icon: LayoutDashboard },
   { href: "/projects", label: "项目", icon: FolderKanban },
   { href: "/files", label: "文件收藏", icon: Star },
   { href: "/tags", label: "标签", icon: Tags },
