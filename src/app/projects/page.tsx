@@ -3,7 +3,7 @@
 import { useState, useMemo, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { Plus, Search, Filter, FolderKanban, FolderOpen, Archive, Pencil, Trash2, Terminal, MoreVertical } from "lucide-react";
+import { Plus, Search, Filter, FolderKanban, FolderOpen, Archive, Pencil, Trash2, MoreVertical } from "lucide-react";
 import { useProjects, useTags, useToast } from "@/lib/use-store";
 import { createProject, updateProject, deleteProject, archiveProject, getProject } from "@/lib/store";
 import { StatusBadge, TypeBadge, PriorityBadge, TagBadge } from "@/components/ui/badges";
@@ -239,7 +239,7 @@ export default function ProjectsPage() {
                           <FolderOpen className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); openInQoder(project.localPath!); }} title="用 Qoder 打开">
-                          <Terminal className="h-4 w-4" />
+                          <img src="/qoder.svg" alt="Qoder" className="h-4 w-4" />
                         </Button>
                       </>
                     )}
